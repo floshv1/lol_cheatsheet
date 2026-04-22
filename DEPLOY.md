@@ -44,7 +44,7 @@ Click **Deploy**. Komodo will:
 3. Build both images (~2–3 min on first run)
 4. Start the containers
 
-The app will be available at `http://your-server-ip:8080`.
+The app will be available at `http://your-server-ip:8081`.
 
 ### 4. Redeploy after a push
 
@@ -70,7 +70,7 @@ cd lol-cheatsheet
 docker compose up -d --build
 ```
 
-The app runs at `http://your-server-ip:8080`.
+The app runs at `http://your-server-ip:8081`.
 
 ### Update
 
