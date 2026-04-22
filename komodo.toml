@@ -1,9 +1,0 @@
-[[stack]]
-name = "lol-cheatsheet"
-[stack.config]
-  compose_file = "docker-compose.yml"
-  run_build = true
-  environment = """
-KOMODO_VOLUME_DIR=/opt/komodo-volumes/lol-cheatsheet/data
-"""
-  auto_update = false

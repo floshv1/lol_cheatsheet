@@ -147,7 +147,6 @@ lol-cheatsheet/
 │       ├── hooks/                # useDDData, useRuneData
 │       └── lib/                  # api.js, dataDragon.js
 ├── docker-compose.yml
-├── komodo.toml                   # Komodo stack definition
 └── .gitignore
 ```
 

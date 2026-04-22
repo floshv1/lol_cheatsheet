@@ -33,13 +33,7 @@ In the Komodo UI:
    - **Repo:** `your-username/lol-cheatsheet`
    - **Branch:** `main` (or your default branch)
    - **Compose file path:** `docker-compose.yml`
-3. Under **Environment**, add:
-   ```
-   KOMODO_VOLUME_DIR=/opt/komodo-volumes/lol-cheatsheet/data
-   ```
-   This is informational — it records where your data lives on the host.
-   The actual data is stored in the `lol_data` named Docker volume managed by Docker.
-
+3. Enable **Run build** so Komodo builds the Docker images from source.
 4. Leave **Auto update** off unless you want automatic redeploys on every push.
 
 ### 3. Deploy
