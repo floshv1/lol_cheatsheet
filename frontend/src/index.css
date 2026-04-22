@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --color-navy: #0A0E1A;
+  --color-navy-light: #0F1923;
+  --color-gold: #C8AA6E;
+  --color-gold-dark: #785A28;
+  --color-panel: #1E2D3D;
+  --color-panel-light: #2A3F55;
+  --color-cream: #E8E0D0;
+  --color-danger: #C0393A;
+  --color-easy: #5CA85B;
+  --color-hard: #C0393A;
+}
+
+body {
+  background-color: var(--color-navy);
+  color: var(--color-cream);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-navy); }
+::-webkit-scrollbar-thumb { background: var(--color-gold-dark); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-gold); }
