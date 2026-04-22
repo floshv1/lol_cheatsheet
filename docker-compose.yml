@@ -20,8 +20,6 @@ services:
       - "8080:80"
     networks:
       - lol-net
-    depends_on:
-      - backend
     restart: unless-stopped
 
 networks:
