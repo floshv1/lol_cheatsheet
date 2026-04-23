@@ -91,7 +91,7 @@ export default function BuildDisplay({ items, buildId, onAdd, onDelete, onReorde
                       itemId={item.item_id}
                       itemName={item.item_name}
                       note={item.note}
-                      size={44}
+                      size={56}
                       orderIndex={idx}
                     />
                     {editable && (
@@ -119,7 +119,7 @@ export default function BuildDisplay({ items, buildId, onAdd, onDelete, onReorde
                 <button
                   onClick={() => setAdding(slot)}
                   disabled={saving}
-                  className="w-11 h-11 border border-dashed border-gold-dark/40 rounded flex items-center justify-center text-cream/30 hover:text-gold hover:border-gold transition-colors text-xl disabled:opacity-40"
+                  className="w-14 h-14 border border-dashed border-gold-dark/40 rounded flex items-center justify-center text-cream/30 hover:text-gold hover:border-gold transition-colors text-xl disabled:opacity-40"
                 >+</button>
               ) : null}
             </div>

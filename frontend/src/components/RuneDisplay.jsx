@@ -63,7 +63,7 @@ export default function RuneDisplay({ page }) {
       <div className="flex flex-col gap-3 min-w-[120px]">
         {primaryTree && (
           <div className="flex items-center gap-2">
-            <img src={runeIconUrl(primaryTree.icon)} alt={primaryTree.name} className="w-5 h-5" />
+            <img src={runeIconUrl(primaryTree.icon)} alt={primaryTree.name} className="w-7 h-7" />
             <span className="text-gold text-sm font-semibold">{primaryTree.name}</span>
           </div>
         )}
@@ -78,7 +78,7 @@ export default function RuneDisplay({ page }) {
                   key={rune.key}
                   runeKey={rune.key}
                   runeMap={runeMap}
-                  size={44}
+                  size={58}
                   active={anySelected ? isSelected : null}
                 />
               )
@@ -98,7 +98,7 @@ export default function RuneDisplay({ page }) {
                     key={rune.key}
                     runeKey={rune.key}
                     runeMap={runeMap}
-                    size={30}
+                    size={40}
                     active={selected ? isSelected : null}
                   />
                 )
@@ -112,7 +112,7 @@ export default function RuneDisplay({ page }) {
       <div className="flex flex-col gap-3 min-w-[100px]">
         {secondaryTree && (
           <div className="flex items-center gap-2">
-            <img src={runeIconUrl(secondaryTree.icon)} alt={secondaryTree.name} className="w-4 h-4 opacity-70" />
+            <img src={runeIconUrl(secondaryTree.icon)} alt={secondaryTree.name} className="w-5 h-5 opacity-70" />
             <span className="text-cream/60 text-sm">{secondaryTree.name}</span>
           </div>
         )}
@@ -125,7 +125,7 @@ export default function RuneDisplay({ page }) {
                   key={rune.key}
                   runeKey={rune.key}
                   runeMap={runeMap}
-                  size={28}
+                  size={36}
                   active={secActive.length > 0 ? isSelected : null}
                 />
               )

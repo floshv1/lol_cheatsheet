@@ -11,6 +11,7 @@ import buildsRouter from './routes/builds.js'
 import matchupsRouter from './routes/matchups.js'
 import lookupRouter from './routes/lookup.js'
 import allMatchupsRouter from './routes/all-matchups.js'
+import statsRouter from './routes/stats.js'
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const app = express()
@@ -28,6 +29,7 @@ app.use('/api/champions/:championId/builds', buildsRouter)
 app.use('/api/champions/:championId/matchups', matchupsRouter)
 app.use('/api/lookup', lookupRouter)
 app.use('/api/all-matchups', allMatchupsRouter)
+app.use('/api/stats', statsRouter)
 
 runMigrations()
 runSeed()

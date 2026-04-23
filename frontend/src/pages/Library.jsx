@@ -276,7 +276,7 @@ export default function Library() {
   const [tab, setTab] = useState('Champions')
 
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="px-6 py-8">
       <h1 className="text-gold text-2xl font-bold mb-2">Library</h1>
       <p className="text-cream/40 text-sm mb-6">All champions, items and runes from the current patch.</p>
 

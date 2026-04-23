@@ -52,7 +52,7 @@ export default function App() {
   return (
     <div className="flex h-screen overflow-hidden">
       {/* Desktop sidebar */}
-      <aside className="hidden md:flex flex-col w-52 border-r border-gold-dark/30 bg-navy-light p-3 gap-1 shrink-0">
+      <aside className="hidden md:flex flex-col w-52 2xl:w-64 border-r border-gold-dark/30 bg-navy-light p-3 gap-1 shrink-0">
         <div className="text-gold font-bold text-base mb-3 px-3 pt-1">LoL Cheatsheet</div>
         {NAV.map(n => <NavItem key={n.to} {...n} />)}
       </aside>

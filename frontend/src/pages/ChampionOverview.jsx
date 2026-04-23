@@ -370,7 +370,7 @@ export default function ChampionOverview() {
       <div className="flex flex-col md:flex-row flex-1 overflow-hidden">
 
         {/* Left: Build */}
-        <div className={`w-full md:w-72 lg:w-80 shrink-0 md:border-r border-gold-dark/20 px-4 py-5 overflow-y-auto ${mobileTab !== 'build' ? 'hidden md:block' : ''}`}>
+        <div className={`w-full md:w-72 lg:w-80 2xl:w-96 shrink-0 md:border-r border-gold-dark/20 px-4 py-5 overflow-y-auto ${mobileTab !== 'build' ? 'hidden md:block' : ''}`}>
           <div className="flex items-center justify-between mb-3">
             <div className="flex items-center gap-2">
               <span className="text-cream/60 text-xs uppercase tracking-wide font-semibold">Build</span>

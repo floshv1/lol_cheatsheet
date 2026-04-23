@@ -27,7 +27,7 @@ export default function AllMatchups() {
   }, [search, role])
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="px-6 py-8">
       <h1 className="text-gold text-2xl font-bold mb-2">Matchup Matrix</h1>
       <p className="text-cream/50 text-sm mb-6">For every enemy, see which of your pool champions to pick.</p>
 
