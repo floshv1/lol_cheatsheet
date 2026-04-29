@@ -6,9 +6,9 @@ import LookupResultCard from '../components/LookupResultCard.jsx'
 import ChampionAutocomplete from '../components/ChampionAutocomplete.jsx'
 
 const ROLES = ['Top', 'Jungle', 'Mid', 'Bot', 'Support']
-const ROLE_ICONS = { Top: '🛡️', Jungle: '🌲', Mid: '⚡', Bot: '🏹', Support: '💚' }
 const RECENT_KEY = 'lol:recent-lookups'
 const RECENT_MAX = 5
+const POOL_STRIP_MAX = 6
 
 function saveRecent(name) {
   const prev = JSON.parse(localStorage.getItem(RECENT_KEY) || '[]')
@@ -18,48 +18,6 @@ function saveRecent(name) {
 
 function getRecent() {
   return JSON.parse(localStorage.getItem(RECENT_KEY) || '[]')
-}
-
-function StatCard({ icon, label, value }) {
-  return (
-    <div className="flex-1 flex items-center gap-3 bg-panel border border-gold-dark/20 rounded-xl px-5 py-4">
-      <span className="text-2xl">{icon}</span>
-      <div>
-        <div className="text-gold font-bold text-xl leading-tight">{value}</div>
-        <div className="text-cream/40 text-xs mt-0.5">{label}</div>
-      </div>
-    </div>
-  )
-}
-
-function Stars({ value }) {
-  return (
-    <span className="text-sm">
-      {Array.from({ length: 5 }, (_, i) => (
-        <span key={i} className={i < value ? 'text-gold' : 'text-cream/20'}>★</span>
-      ))}
-    </span>
-  )
-}
-
-function PoolChampCard({ champ, onClick }) {
-  return (
-    <button
-      onClick={() => onClick(champ)}
-      className="flex items-center gap-2 bg-panel hover:bg-panel-light border border-gold-dark/20 hover:border-gold/40 rounded-lg px-3 py-2 transition-colors w-full text-left group"
-    >
-      <img
-        src={champIconUrl(champ.name)}
-        alt={champ.name}
-        className="w-9 h-9 rounded object-cover border border-gold-dark/30 shrink-0"
-        onError={e => { e.currentTarget.style.display = 'none' }}
-      />
-      <div className="flex-1 min-w-0">
-        <div className="text-cream text-sm font-medium truncate">{champ.name}</div>
-        <Stars value={champ.comfort} />
-      </div>
-    </button>
-  )
 }
 
 export default function Dashboard() {
@@ -105,151 +63,164 @@ export default function Dashboard() {
     setRecent(getRecent())
   }
 
-  const byRole = ROLES.map(r => ({
-    role: r,
-    champs: champs.filter(c => c.role === r).sort((a, b) => b.comfort - a.comfort),
-  })).filter(g => g.champs.length > 0)
+  const visiblePool = champs.slice(0, POOL_STRIP_MAX)
+  const overflowCount = Math.max(0, champs.length - POOL_STRIP_MAX)
 
   return (
-    <div className="flex flex-col h-full min-h-screen">
+    <div className="px-6 py-6 flex flex-col gap-6 min-h-screen">
 
-      {/* Stats bar */}
-      {stats && (
-        <div className="flex gap-3 px-6 pt-6 pb-2">
-          <StatCard icon="🛡️" label="Champions dans le pool" value={stats.champions} />
-          <StatCard icon="⚔️" label="Matchups enregistrés" value={stats.matchups} />
-          <StatCard icon="🎯" label="Rôles couverts" value={`${stats.roles} / 5`} />
+      {/* ── Top bar: stats + pool strip ── */}
+      <div className="flex items-center gap-3 flex-wrap pb-4 border-b border-gold-dark/20">
+        {stats && (
+          <>
+            <div className="flex items-center gap-1.5 bg-panel border border-gold-dark/20 rounded-lg px-3 py-1.5">
+              <span className="text-gold font-bold text-sm">{stats.champions}</span>
+              <span className="text-cream/40 text-xs">champions</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-panel border border-gold-dark/20 rounded-lg px-3 py-1.5">
+              <span className="text-gold font-bold text-sm">{stats.matchups}</span>
+              <span className="text-cream/40 text-xs">matchups</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-panel border border-gold-dark/20 rounded-lg px-3 py-1.5">
+              <span className="text-gold font-bold text-sm">{stats.roles} / 5</span>
+              <span className="text-cream/40 text-xs">roles</span>
+            </div>
+          </>
+        )}
+
+        {champs.length > 0 && (
+          <div className="ml-auto flex items-center gap-2">
+            <span className="text-cream/30 text-xs">My pool</span>
+            <div className="flex gap-1.5 items-center">
+              {visiblePool.map(c => (
+                <button
+                  key={c.id}
+                  onClick={() => navigate(`/champions/${c.id}`)}
+                  title={c.name}
+                  className="w-7 h-7 rounded overflow-hidden border border-gold-dark/20 hover:border-gold/50 transition-colors flex-shrink-0"
+                >
+                  <img
+                    src={champIconUrl(c.name)}
+                    alt={c.name}
+                    className="w-full h-full object-cover"
+                    onError={e => { e.currentTarget.style.display = 'none' }}
+                  />
+                </button>
+              ))}
+              {overflowCount > 0 && (
+                <button
+                  onClick={() => navigate('/pool')}
+                  className="w-7 h-7 rounded bg-panel border border-gold-dark/20 hover:border-gold/50 flex items-center justify-center text-[9px] text-cream/50 font-bold transition-colors"
+                >
+                  +{overflowCount}
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ── Search section ── */}
+      <div className="flex flex-col gap-3">
+        <h1 className="text-gold text-2xl font-bold leading-none">Enemy Lookup</h1>
+        <ChampionAutocomplete
+          placeholder="Enemy champion… (press / to focus)"
+          onSelect={c => selectEnemy(c.name)}
+          focusRef={searchRef}
+        />
+        <div className="flex gap-2 flex-wrap">
+          <button
+            onClick={() => setRole('')}
+            className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
+              role === ''
+                ? 'bg-panel-light border-gold/50 text-cream'
+                : 'border-gold-dark/30 text-cream/40 hover:text-cream/70 hover:border-gold-dark/50'
+            }`}
+          >
+            All
+          </button>
+          {ROLES.map(r => (
+            <button
+              key={r}
+              onClick={() => setRole(prev => prev === r ? '' : r)}
+              className={`px-3 py-1 rounded-full text-xs font-semibold border transition-colors ${
+                role === r
+                  ? 'bg-panel-light border-gold/50 text-cream'
+                  : 'border-gold-dark/30 text-cream/40 hover:text-cream/70 hover:border-gold-dark/50'
+              }`}
+            >
+              {r}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* ── Recent lookups ── */}
+      {!enemy && recent.length > 0 && (
+        <div className="flex items-center gap-2 flex-wrap">
+          <span className="text-xs text-cream/30 uppercase tracking-wide">Recent:</span>
+          {recent.map(name => (
+            <button
+              key={name}
+              onClick={() => selectEnemy(name)}
+              className="flex items-center gap-1.5 bg-panel hover:bg-panel-light border border-gold-dark/20 hover:border-gold/40 rounded-lg px-3 py-1.5 text-cream/60 hover:text-cream text-sm transition-colors"
+            >
+              <img
+                src={champIconUrl(name)}
+                alt={name}
+                className="w-5 h-5 rounded object-cover"
+                onError={e => { e.currentTarget.style.display = 'none' }}
+              />
+              {name}
+            </button>
+          ))}
         </div>
       )}
 
-      {/* Main content */}
-      <div className="flex flex-col lg:flex-row flex-1">
+      {/* ── Empty state ── */}
+      {!enemy && (
+        <div className="text-center py-16 text-cream/20">
+          <div className="text-5xl mb-3">⚔️</div>
+          <div>Search an enemy to get started</div>
+        </div>
+      )}
 
-        {/* Left: Lookup */}
-        <div className="flex-1 px-6 py-6 lg:border-r lg:border-gold-dark/20">
-          <h1 className="text-gold text-2xl font-bold mb-1">Enemy Lookup</h1>
-          <p className="text-cream/40 text-sm mb-5">Search an enemy to see which of your pool to pick and how.</p>
+      {/* ── Loading ── */}
+      {loading && <div className="text-cream/40 text-sm">Searching…</div>}
 
-          <div className="flex gap-3 mb-6 flex-wrap">
-            <ChampionAutocomplete
-              placeholder="Enemy champion… (press / to focus)"
-              onSelect={c => selectEnemy(c.name)}
-              className="flex-1 min-w-[180px]"
-              focusRef={searchRef}
-            />
-            <select
-              className="bg-panel border border-gold-dark/40 rounded-lg px-3 py-2.5 text-cream text-sm focus:outline-none focus:border-gold"
-              value={role}
-              onChange={e => setRole(e.target.value)}
-            >
-              <option value="">All roles</option>
-              {ROLES.map(r => <option key={r}>{r}</option>)}
-            </select>
-          </div>
+      {/* ── Results ── */}
+      {lookupData && !loading && (
+        <>
+          {lookupData.results.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {lookupData.results.map(r => (
+                <LookupResultCard key={r.champion.id} {...r} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-cream/30 text-sm">No matchup data for this enemy yet.</div>
+          )}
 
-          {/* Recent lookups */}
-          {!enemy && recent.length > 0 && (
-            <div className="mb-6">
-              <div className="text-xs text-cream/30 uppercase tracking-wide mb-2">Recherches récentes</div>
+          {lookupData.no_data.length > 0 && (
+            <div className="bg-panel/40 border border-gold-dark/10 rounded-lg px-4 py-3">
+              <div className="text-xs text-cream/30 uppercase tracking-wide mb-2">Pool champs without data</div>
               <div className="flex flex-wrap gap-2">
-                {recent.map(name => (
-                  <button
-                    key={name}
-                    onClick={() => selectEnemy(name)}
-                    className="flex items-center gap-1.5 bg-panel hover:bg-panel-light border border-gold-dark/20 hover:border-gold/40 rounded-lg px-3 py-1.5 text-cream/70 hover:text-cream text-sm transition-colors"
-                  >
+                {lookupData.no_data.map(c => (
+                  <div key={c.id} className="flex items-center gap-1.5 text-cream/40 text-xs">
                     <img
-                      src={champIconUrl(name)}
-                      alt={name}
-                      className="w-5 h-5 rounded object-cover"
+                      src={champIconUrl(c.name)}
+                      alt={c.name}
+                      className="w-5 h-5 rounded opacity-40"
                       onError={e => { e.currentTarget.style.display = 'none' }}
                     />
-                    {name}
-                  </button>
+                    {c.name}
+                  </div>
                 ))}
               </div>
             </div>
           )}
-
-          {loading && <div className="text-cream/40 text-sm">Searching…</div>}
-
-          {lookupData && (
-            <>
-              {lookupData.results.length > 0 ? (
-                <div className="flex flex-col gap-4">
-                  {lookupData.results.map(r => (
-                    <LookupResultCard key={r.champion.id} {...r} />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-cream/30 text-sm">No matchup data for this enemy yet.</div>
-              )}
-
-              {lookupData.no_data.length > 0 && (
-                <div className="mt-6">
-                  <div className="text-xs text-cream/30 uppercase tracking-wide mb-2">Pool champs without data</div>
-                  <div className="flex flex-wrap gap-2">
-                    {lookupData.no_data.map(c => (
-                      <div key={c.id} className="flex items-center gap-1.5 bg-panel/40 rounded px-2 py-1 text-cream/40 text-xs">
-                        <img src={champIconUrl(c.name)} alt={c.name} className="w-5 h-5 rounded opacity-50"
-                          onError={e => { e.currentTarget.style.display = 'none' }} />
-                        {c.name}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </>
-          )}
-
-          {!enemy && (
-            <div className="text-center py-16 text-cream/20">
-              <div className="text-5xl mb-3">⚔️</div>
-              <div>Search an enemy to get started</div>
-            </div>
-          )}
-        </div>
-
-        {/* Right: Pool by role */}
-        <div className="w-full lg:w-80 xl:w-96 2xl:w-[30rem] px-6 py-6 shrink-0">
-          <div className="flex items-center justify-between mb-5">
-            <h2 className="text-cream font-bold text-lg">My Pool</h2>
-            <button
-              onClick={() => navigate('/pool')}
-              className="text-xs text-gold hover:text-gold/70 transition-colors"
-            >
-              Manage →
-            </button>
-          </div>
-
-          {byRole.length === 0 && (
-            <div className="text-cream/20 text-sm text-center py-8">
-              No champions yet.{' '}
-              <button onClick={() => navigate('/pool')} className="text-gold underline">Add some →</button>
-            </div>
-          )}
-
-          <div className="flex flex-col gap-5">
-            {byRole.map(({ role, champs }) => (
-              <div key={role}>
-                <div className="flex items-center gap-2 mb-2">
-                  <span className="text-base">{ROLE_ICONS[role]}</span>
-                  <span className="text-xs text-cream/50 uppercase tracking-wide font-semibold">{role}</span>
-                </div>
-                <div className="flex flex-col gap-1.5">
-                  {champs.map(c => (
-                    <PoolChampCard
-                      key={c.id}
-                      champ={c}
-                      onClick={() => navigate(`/champions/${c.id}`)}
-                    />
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+        </>
+      )}
     </div>
   )
 }

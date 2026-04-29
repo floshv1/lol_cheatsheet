@@ -11,6 +11,9 @@ router.get('/', (req, res) => {
   let sql = `
     SELECT
       m.enemy_name,
+      m.id as matchup_id,
+      m.rune_page_id,
+      m.build_id,
       c.id as champion_id, c.name, c.comfort, c.role,
       m.difficulty, m.laning_tip
     FROM matchups m
@@ -29,12 +32,15 @@ router.get('/', (req, res) => {
   for (const row of rows) {
     if (!map.has(row.enemy_name)) map.set(row.enemy_name, [])
     map.get(row.enemy_name).push({
+      matchup_id: row.matchup_id,
       champion_id: row.champion_id,
       name: row.name,
       comfort: row.comfort,
       role: row.role,
       difficulty: row.difficulty,
       laning_tip: row.laning_tip,
+      rune_page_id: row.rune_page_id ?? null,
+      build_id: row.build_id ?? null,
     })
   }
 
